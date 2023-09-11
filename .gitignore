@@ -1,0 +1,16 @@
+# Python Environments
+.venv
+env/
+.env
+
+# Python cache files
+__pycache__/
+
+# DataSet
+data/
+
+# Exclude the models directory
+models/
+
+# Exclude the notebooks directory
+notebooks/
