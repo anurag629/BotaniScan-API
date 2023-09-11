@@ -11,7 +11,7 @@ from tensorflow.nn import softmax
 from numpy import max
 import numpy as np
 from json import dumps
-import cv2
+
 from uvicorn import run
 import os
 
