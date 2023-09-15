@@ -45,7 +45,10 @@ async def get_image_prediction(image_link: str = ""):
     if image_link == "":
         return {"message": "No image link provided"}
     
-    image = Image.open(requests.get(image_link, stream=True).raw)
+    try:
+        image = Image.open(requests.get(image_link, stream=True).raw)
+    except:
+        return {"message": "Invalid image link"}
 
     pred = apg.getPrediction(image)
 
