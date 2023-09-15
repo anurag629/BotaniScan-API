@@ -9,8 +9,5 @@ __pycache__/
 # DataSet
 data/
 
-# Exclude the models directory
-models/
-
 # Exclude the notebooks directory
 notebooks/
