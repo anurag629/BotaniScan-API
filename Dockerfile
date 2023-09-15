@@ -29,7 +29,15 @@ WORKDIR $HOME/app
 COPY --chown=user . $HOME/app
 
 # Minimize image size 
+# RUN (apt-get autoremove -y; \
+#      apt-get autoclean -y)
+
+# Minimize image size with sudo command and give permission to user
 RUN (apt-get autoremove -y; \
-     apt-get autoclean -y)
+     apt-get autoclean -y; \
+     rm -rf /var/lib/apt/lists/*; \
+     echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers; \
+     chown -R user:user $HOME; \
+     chmod -R 777 $HOME)
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
