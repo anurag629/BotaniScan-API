@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import tensorflow as tf
-from tensorflow.keras.models import load_model
 from tensorflow.keras.utils import get_file 
 from tensorflow.keras.utils import load_img 
 from tensorflow.keras.utils import img_to_array
@@ -14,15 +13,15 @@ from json import dumps
 import cv2
 from uvicorn import run
 import os
+from PIL import Image
+import requests
 
 
 import app.internal.plantClass as aip
+import app.models.getModel as apg
 
 
 app = FastAPI()
-
-# model_dir = "../models/model_01.h5"
-# model = load_model(model_dir, compile=False)
 
 origins = ["*"]
 methods = ["*"]
@@ -41,33 +40,16 @@ async def root():
     return {"message": "Welcome to the Food Vision API!"}
 
 
-# @app.post("/prediction/")
-# async def get_net_image_prediction(image_link: str = ""):
-#     if image_link == "":
-#         return {"message": "No image link provided"}
+@app.post("/prediction/")
+async def get_image_prediction(image_link: str = ""):
+    if image_link == "":
+        return {"message": "No image link provided"}
     
-#     img_path = get_file(
-#         origin = image_link
-#     )
-#     img = load_img(
-#         img_path, 
-#         target_size = (250, 250)
-#     )
+    image = Image.open(requests.get(image_link, stream=True).raw)
 
-#     img_array = img_to_array(img)
-#     img_array = expand_dims(img_array, 0)
+    pred = apg.getPrediction(image)
 
-#     pred = model.predict(img_array)
-#     score = softmax(pred[0])
-#     print(score)
-
-#     class_prediction = aip.getClassName(score)
-#     model_score = round(max(score) * 100, 2)
-
-#     return {
-#         "model-prediction": class_prediction,
-#         "model-prediction-confidence-score": model_score
-#     }
+    return {"prediction": pred}
 
 
 # Get method for getting all the classes in the model
