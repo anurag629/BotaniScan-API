@@ -17,8 +17,16 @@ WORKDIR /code
 COPY ./requirements.txt /code/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+RUN apt update && apt install -y ffmpeg
 
-COPY . .
+RUN useradd -m -u 1000 user
+USER user
+ENV HOME=/home/user \
+	PATH=/home/user/.local/bin:$PATH
+
+WORKDIR $HOME/app
+
+COPY --chown=user . $HOME/app
 
 # Minimize image size 
 RUN (apt-get autoremove -y; \
