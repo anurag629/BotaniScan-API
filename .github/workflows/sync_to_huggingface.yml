@@ -25,8 +25,6 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_REPO_CLONE_URL: ${{ secrets.HF_REPO_CLONE_URL }}
         run: |
-          # Remove any existing remote named 'hub'
-          git remote rm hub || true
 
           # Add the Hugging Face remote with the correct URL
           git remote add hub $HF_REPO_CLONE_URL
