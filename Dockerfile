@@ -38,7 +38,7 @@ COPY ./requirements.txt $HOME/app/
 RUN pip install --no-cache-dir --upgrade -r $HOME/app/requirements.txt
 
 # Minimize image size
-RUN rm -rf /root/.cache && \
+RUN rm -rf /home/user/.cache && \
     rm -rf /var/cache/apt/archives/* && \
     rm -rf /var/lib/apt/lists/* && \
     chmod -R 777 $HOME
