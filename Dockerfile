@@ -1,5 +1,6 @@
 FROM python:3.8.0
 
+# Install required packages as root
 RUN apt-get update && apt-get install -y --no-install-recommends \
       bzip2 \
       g++ \
@@ -9,7 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       libhdf5-dev \
       openmpi-bin \
       wget \
-      python3-tk && \
+      python3-tk \
+      ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /code
@@ -22,8 +24,6 @@ RUN useradd -m -u 1000 user
 USER user
 ENV HOME=/home/user \
 	PATH=/home/user/.local/bin:$PATH
-
-RUN apt-get update && apt-get install -y ffmpeg
 
 WORKDIR $HOME/app
 
