@@ -2,15 +2,21 @@ name: Sync to Hugging Face hub
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+
+  # to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of
+          # commitlint and git log checks
+          fetch-depth: 0
 
       - name: Configure Git
         env:
@@ -19,18 +25,9 @@ jobs:
         run: |
           git config user.name $USER_NAME
           git config user.email $USER_EMAIL
-
+        
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HF_REPO_CLONE_URL: ${{ secrets.HF_REPO_CLONE_URL }}
         run: |
-
-          # Add the Hugging Face remote with the correct URL
-          git remote add hub $HF_REPO_CLONE_URL
-
-          # Fetch the remote repository
-          git fetch hub
-
-          # Push to the 'main' branch forcefully
-          git push --force hub main
+          git push --force https://anurag629:$HF_TOKEN@huggingface.co/spaces/anurag629/botaniscan main
