@@ -37,8 +37,16 @@ USER user
 COPY ./requirements.txt $HOME/app/
 RUN pip install --no-cache-dir --upgrade -r $HOME/app/requirements.txt
 
+# Switch back to root temporarily to delete protected directories
+USER root
+RUN rm -rf /var/cache/apt/archives/* && \
+    rm -rf /var/lib/apt/lists/*
+
+# Switch to non-root user for final cleanup
+USER user
+
 # Clean up unnecessary files for a smaller image size
-RUN find /var/cache/apt/archives /var/lib/apt/lists /tmp -mindepth 1 -delete && \
+RUN rm -rf /tmp/* && \
     chmod -R 777 $HOME
 
 # Command to run the application
