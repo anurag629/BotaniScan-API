@@ -37,17 +37,11 @@ USER user
 COPY ./requirements.txt $HOME/app/
 RUN pip install --no-cache-dir --upgrade -r $HOME/app/requirements.txt
 
-# Switch back to root temporarily to delete protected directories
-USER root
-RUN rm -rf /var/cache/apt/archives/* && \
-    rm -rf /var/lib/apt/lists/*
-
-# Switch to non-root user for final cleanup
-USER user
-
 # Clean up unnecessary files for a smaller image size
-RUN rm -rf /tmp/* && \
-    chmod -R 777 $HOME
+RUN rm -rf /tmp/*
+
+# Set permissions only for specific directories
+RUN chmod -R 755 $HOME
 
 # Command to run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
