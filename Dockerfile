@@ -1,15 +1,18 @@
+# Build stage
+FROM python:3.8.0 AS build
+
 # Install required packages as root
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      bzip2 \
-      g++ \
-      git \
-      graphviz \
-      libgl1-mesa-glx \
-      libhdf5-dev \
-      openmpi-bin \
-      wget \
-      python3-tk \
-      ffmpeg && \
+    bzip2 \
+    g++ \
+    git \
+    graphviz \
+    libgl1-mesa-glx \
+    libhdf5-dev \
+    openmpi-bin \
+    wget \
+    python3-tk \
+    ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /code
@@ -21,7 +24,7 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 RUN useradd -m -u 1000 user
 USER user
 ENV HOME=/home/user \
-	PATH=/home/user/.local/bin:$PATH
+     PATH=/home/user/.local/bin:$PATH
 
 WORKDIR $HOME/app
 
