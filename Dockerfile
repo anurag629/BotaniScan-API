@@ -1,6 +1,7 @@
-FROM python:3.8.0
+# Use a smaller base image
+FROM python:3.8-slim
 
-# Install required packages as root
+# Install required packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
       bzip2 \
       g++ \
@@ -12,29 +13,35 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       wget \
       python3-tk \
       ffmpeg && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /tmp/*
 
-WORKDIR /code
-
-COPY ./requirements.txt /code/requirements.txt
-
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
-
+# Create a non-root user
 RUN useradd -m -u 1000 user
-USER user
-ENV HOME=/home/user \
-	PATH=/home/user/.local/bin:$PATH
 
+# Set environment variables
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
+
+# Set the working directory
 WORKDIR $HOME/app
 
+# Copy the application code
 COPY --chown=user . $HOME/app
 
-# Minimize image size with sudo command and give permission to user
-RUN (apt-get autoremove -y; \
-     apt-get autoclean -y; \
-     rm -rf /var/lib/apt/lists/*; \
-     echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers; \
-     chown -R user:user $HOME; \
-     chmod -R 777 $HOME)
+# Switch to the non-root user
+USER user
 
+# Install Python dependencies
+COPY ./requirements.txt $HOME/app/
+RUN pip install --no-cache-dir --upgrade -r $HOME/app/requirements.txt
+
+# Minimize image size
+RUN rm -rf /root/.cache && \
+    rm -rf /var/cache/apt/archives/* && \
+    rm -rf /var/lib/apt/lists/* && \
+    chmod -R 777 $HOME
+
+# Command to run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
