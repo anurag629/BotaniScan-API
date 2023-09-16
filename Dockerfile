@@ -14,14 +14,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       python3-tk \
       ffmpeg && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /tmp/*
+    rm -rf /var/lib/apt/lists/*
 
 # Create a non-root user
 RUN useradd -m -u 1000 user
 
 # Set environment variables
 ENV HOME=/home/user \
+    TMP_DIR=/tmp/app-temp \
     PATH=/home/user/.local/bin:$PATH
 
 # Set the working directory
@@ -33,15 +33,16 @@ COPY --chown=user . $HOME/app
 # Switch to the non-root user
 USER user
 
-# Install Python dependencies
-COPY ./requirements.txt $HOME/app/
-RUN pip install --no-cache-dir --upgrade -r $HOME/app/requirements.txt
+# Install Python dependencies in a temporary directory
+RUN mkdir $TMP_DIR && \
+    pip install --no-cache-dir --upgrade -r $HOME/app/requirements.txt -t $TMP_DIR && \
+    rm -rf $TMP_DIR/__pycache__ && \
+    mv $TMP_DIR/* $HOME/app/ && \
+    rm -rf $TMP_DIR
 
 # Clean up unnecessary files for a smaller image size
-RUN rm -rf /tmp/*
-
-# Set permissions only for specific directories
-RUN chmod -R 755 $HOME
+RUN rm -rf /tmp/* && \
+    chmod -R 777 $HOME
 
 # Command to run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
