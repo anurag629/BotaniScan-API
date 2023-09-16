@@ -23,7 +23,7 @@ USER user
 ENV HOME=/home/user \
 	PATH=/home/user/.local/bin:$PATH
 
-RUN apt update && apt install -y ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg
 
 WORKDIR $HOME/app
 
