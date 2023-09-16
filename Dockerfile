@@ -37,11 +37,10 @@ USER user
 COPY ./requirements.txt $HOME/app/
 RUN pip install --no-cache-dir --upgrade -r $HOME/app/requirements.txt
 
-# Minimize image size
-RUN rm -rf /home/user/.cache && \
-    rm -rf /var/cache/apt/archives/* && \
+# Clean up unnecessary files for a smaller image size
+RUN rm -rf /var/cache/apt/archives/* && \
     rm -rf /var/lib/apt/lists/* && \
-    chmod -R 777 $HOME
+    rm -rf /tmp/*
 
 # Command to run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
