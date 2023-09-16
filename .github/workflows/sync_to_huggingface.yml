@@ -16,12 +16,14 @@ jobs:
         with:
           # Disabling shallow clone is recommended for improving relevancy of
           # commitlint and git log checks
+          # git push --force https://anurag629:$HF_TOKEN@huggingface.co/spaces/anurag629/botaniscan main
           fetch-depth: 0
 
       - name: Configure Git
         env:
           USER_NAME: ${{ secrets.USER_NAME }}
           USER_EMAIL: ${{ secrets.USER_EMAIL }}
+          HF_REPO_CLONE_URL: ${{ secrets.HF_REPO_CLONE_URL }}
         run: |
           git config user.name $USER_NAME
           git config user.email $USER_EMAIL
@@ -30,4 +32,6 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git push --force https://anurag629:$HF_TOKEN@huggingface.co/spaces/anurag629/botaniscan main
+          git remote add hub $HF_REPO_CLONE_URL
+          git checkout main
+          git push --force hub main
