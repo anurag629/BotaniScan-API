@@ -10,7 +10,7 @@ import requests
 import app.internal.plantClass as aip
 import app.models.getModel as apg
 import app.chatbot.chatBot as acc
-
+import app.chatbot.generalChatBot as acgc
 
 app = FastAPI()
 
@@ -70,6 +70,14 @@ async def get_plant_details(plant_name: str):
 async def get_all_classes():
     return {"classes": aip.getAllClasses()}
 
+
+# Get method for chatting with biodiversity researcher
+@app.post("/chat/biodiversity_researcher")
+async def chat_with_expert_biodiversity_researcher(message: str = "", examples: list = []):
+    if message == "":
+        return {"response": "No message provided"}
+    
+    return {"response": acgc.chat_with_expert_biodiversity_researcher(message, examples)}
 
     
 if __name__ == "__main__":

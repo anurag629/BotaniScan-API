@@ -13,7 +13,7 @@ def get_plant_details(plant_name):
 
 Upon receiving the name of a specified medicinal plant, we need you to unravel in-depth information about the plant, starting from its origin, historical usage, botanical characteristics, current application in the health industry, to any recent scientific studies linked to it.
 
-In response to the prevailing challenges that the plant might be facing, please offer innovative and effective strategies. We require your valuable insights and recommendations to be presented in a detailed report, composed using the Markdown formatting style for improved readability. Ensure to incorporate relevant headings, subheadings, and exhaustive contextual explanations as needed.
+In response to the prevailing challenges that the plant might be facing, please offer innovative and effective strategies. We require your valuable insights and recommendations to be presented in a detailed report, composed using the Markdown formatting style for improved readability. Ensure to incorporate relevant headings, subheadings, and exhaustive contextual explanations with emoji's as needed.
 '''
     message = prompt + f'\nStudent: {plant_name}'
     return bot.plant_chat(prompt, message)
